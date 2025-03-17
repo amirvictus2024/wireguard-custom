@@ -2631,9 +2631,9 @@
                 publicKey: toBase64(keyPair.publicKey)
             };
             document.getElementById('keysDisplay').innerHTML = `
-        <p><strong>Private Key:</strong> ${generatedKeys.privateKey}</p>
-        <p><strong>Public Key:</strong> ${generatedKeys.publicKey}</p>
-      `;
+                <p><strong>Private Key:</strong> ${generatedKeys.privateKey}</p>
+                <p><strong>Public Key:</strong> ${generatedKeys.publicKey}</p>
+            `;
         });
 
         // اطمینان از اینکه فقط یک نوع Endpoint انتخاب شود
@@ -2693,12 +2693,12 @@
             const container = document.createElement('div');
             container.className = 'candidate-item';
             container.innerHTML = `
-        <span class="candidate-text">${candidateText}</span>
-        <div class="candidate-actions">
-          <button class="confirmCandidateBtn">افزودن</button>
-          <button class="cancelCandidateBtn">انصراف</button>
-        </div>
-      `;
+                <span class="candidate-text">${candidateText}</span>
+                <div class="candidate-actions">
+                    <button class="confirmCandidateBtn">افزودن</button>
+                    <button class="cancelCandidateBtn">انصراف</button>
+                </div>
+            `;
             container.querySelector('.confirmCandidateBtn').addEventListener('click', function () {
                 onConfirm(candidateText);
                 container.remove();
@@ -2730,8 +2730,9 @@
         document.getElementById('previewAddressIPv4').addEventListener('click', function () {
             const locKey = document.getElementById('location').value;
             const loc = locations[locKey];
-            // استفاده از اولین رنج IPv4
-            const candidate = loc.ipv4[0];
+            // انتخاب تصادفی یک رنج از ipv4
+            const randomIndex = Math.floor(Math.random() * loc.ipv4.length);
+            const candidate = loc.ipv4[randomIndex];
             const candidateElem = createSimpleCandidateElement(candidate, function (text) {
                 document.getElementById('addressList').appendChild(createListItem(text));
             });
@@ -2742,8 +2743,9 @@
         document.getElementById('previewAddressIPv6').addEventListener('click', function () {
             const locKey = document.getElementById('location').value;
             const loc = locations[locKey];
-            // استفاده از اولین رنج IPv6
-            const candidate = loc.ipv6[0];
+            // انتخاب تصادفی یک رنج از ipv6
+            const randomIndex = Math.floor(Math.random() * loc.ipv6.length);
+            const candidate = loc.ipv6[randomIndex];
             const candidateElem = createSimpleCandidateElement(candidate, function (text) {
                 document.getElementById('addressList').appendChild(createListItem(text));
             });
@@ -2756,7 +2758,9 @@
         document.getElementById('previewDNSIPv4').addEventListener('click', function () {
             const locKey = document.getElementById('location').value;
             const loc = locations[locKey];
-            const candidate = randomIP(loc.ipv4[0]);
+            // انتخاب تصادفی یک رنج از ipv4 برای تولید DNS
+            const randomIndex = Math.floor(Math.random() * loc.ipv4.length);
+            const candidate = randomIP(loc.ipv4[randomIndex]);
             const candidateElem = createSimpleCandidateElement(candidate, function (text) {
                 document.getElementById('dnsList').appendChild(createListItem(text));
             });
@@ -2767,7 +2771,9 @@
         document.getElementById('previewDNSIPv6').addEventListener('click', function () {
             const locKey = document.getElementById('location').value;
             const loc = locations[locKey];
-            const candidate = randomIPv6(loc.ipv6[0]);
+            // انتخاب تصادفی یک رنج از ipv6 برای تولید DNS
+            const randomIndex = Math.floor(Math.random() * loc.ipv6.length);
+            const candidate = randomIPv6(loc.ipv6[randomIndex]);
             const candidateElem = createSimpleCandidateElement(candidate, function (text) {
                 document.getElementById('dnsList').appendChild(createListItem(text));
             });
@@ -2829,9 +2835,11 @@
             // تعیین Endpoint بر اساس انتخاب نوع Endpoint (فقط یکی انتخاب شده)
             let endpoint = "";
             if (document.getElementById('endpointIPv4Check').checked) {
-                endpoint = randomIP(loc.ipv4[0]) + ":" + port;
+                const randomIndex = Math.floor(Math.random() * loc.ipv4.length);
+                endpoint = randomIP(loc.ipv4[randomIndex]) + ":" + port;
             } else if (document.getElementById('endpointIPv6Check').checked) {
-                endpoint = "[" + randomIPv6(loc.ipv6[0]) + "]:" + port;
+                const randomIndex = Math.floor(Math.random() * loc.ipv6.length);
+                endpoint = "[" + randomIPv6(loc.ipv6[randomIndex]) + "]:" + port;
             }
 
             // اضافه کردن MTU و PersistentKeepalive در صورت وارد کردن توسط کاربر
@@ -2839,21 +2847,21 @@
             let keepalive = document.getElementById('keepalive').value.trim();
 
             let interfaceSection = `[Interface]
-PrivateKey = ${privateKey}
-Address = ${addresses.join(", ")}
-DNS = ${dnsList.join(", ")}`;
+    PrivateKey = ${privateKey}
+    Address = ${addresses.join(", ")}
+    DNS = ${dnsList.join(", ")}`;
             if (mtu !== "") {
                 interfaceSection += `
-MTU = ${mtu}`;
+    MTU = ${mtu}`;
             }
 
             let peerSection = `[Peer]
-PublicKey = ${generatedKeys.publicKey}
-AllowedIPs = ${document.getElementById('allowedIPs').value}
-Endpoint = ${endpoint}`;
+    PublicKey = ${generatedKeys.publicKey}
+    AllowedIPs = ${document.getElementById('allowedIPs').value}
+    Endpoint = ${endpoint}`;
             if (keepalive !== "") {
                 peerSection += `
-PersistentKeepalive = ${keepalive}`;
+    PersistentKeepalive = ${keepalive}`;
             }
 
             let config = interfaceSection + "\n\n" + peerSection;
@@ -2892,6 +2900,7 @@ PersistentKeepalive = ${keepalive}`;
             });
         });
     </script>
+
 </body>
 
 </html>
